@@ -25,7 +25,10 @@ from common_variables import *
 
 #Function to add a Show directory
 def addprograma(name,url,mode,iconimage,number_of_items,information,fanart_image=''):
-    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
+    if (fanart_image==''):
+        if iconimage:
+            fanart_image= iconimage
+    u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(fanart_image)
     try: u +="&plot="+urllib.quote_plus(information["plot"])
     except: pass
     ok=True

@@ -87,7 +87,7 @@ def setview(setting_name):
 def getProgramaId(url):
     return re.findall(".*/?programa/[\w\d-]*/([\d\w]+)",url)[0];
 
-def getAjaxUrl(programaId, temporada, tipo, pagina):
+def getAjaxUrl(programaId, temporada, tipo, pagina ='1'):
     return 'http://tviplayer.iol.pt/ajax/multimedias/%s/%s/%s/%s' % (programaId, temporada, tipo, pagina)
 
 def getListaProgramasUrl(ano='', letra='', canal='', categoria='' ,pagina='1'):
