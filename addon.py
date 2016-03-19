@@ -33,6 +33,8 @@ def main_menu():
     addDir(translate(40011) ,'http://tviplayer.iol.pt',40011, os.path.join(artfolder,'porcanal.png'),1)
     addDir(translate(40012) ,'http://tviplayer.iol.pt',40012, os.path.join(artfolder,'portema.png'),1)
     addDir(translate(40013) ,'http://tviplayer.iol.pt',40013, os.path.join(artfolder,'az.png'),1)
+    addDir(translate(40014) ,'http://tviplayer.iol.pt',40014, os.path.join(artfolder,'pesquisa.png'),1)
+
 
 
 """ 40011 """
@@ -121,7 +123,8 @@ elif mode==14: list_emissoes(url)
 elif mode==15: list_tv_shows(name,url)
 elif mode==16: list_episodes(name,url,iconimage,plot)
 elif mode==17: get_show_episode_parts(name,url,iconimage)
-
+elif mode==40014: pesquisar()
+elif mode==19: resultadosPesquisa(url)
 
 
 

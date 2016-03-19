@@ -27,7 +27,7 @@ addon_id = 'plugin.video.tviplayer'
 mensagemok = xbmcgui.Dialog().ok
 user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0"
 default_flash_Referer = "http://p.jwpcdn.com/6/12/jwplayer.flash.swf"
-
+pesquisa_url="http://tviplayer.iol.pt/pesquisa/"
 
 selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')

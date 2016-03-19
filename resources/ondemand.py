@@ -17,9 +17,11 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
+from _codecs import encode
+from cgitb import enable
 from platform import mac_ver
 
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs, sys, os, re
+import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs, sys, os, re,json
 from common_variables import *
 from directory import *
 from webutils import *
@@ -151,6 +153,46 @@ def list_emissoes(urltmp):
         else:
             msgok(translate(30001), translate(30032));sys.exit(0)
 
+def pesquisar():
+    keyb = xbmc.Keyboard('', translate(30031))
+    keyb.doModal()
+    if (keyb.isConfirmed()):
+        search = keyb.getText()
+        encodeSearch=urllib.quote(search);
+        resultadosPesquisa(pesquisa_url+encodeSearch+'/1')
+
+
+def resultadosPesquisa( url ):
+    try:
+        page_source = abrir_url(url)
+    except:
+        page_source = ''
+        msgok(translate(30001), translate(30018))
+    if page_source:
+        matchPrograma = re.compile(
+            '<li class="resultado-programa">\s*<a href="(/programa/.+?)">\s*<div class="thumb logo" style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)\)"></div>\s*<div class="details">([\d:]*)\s*\|\s*<span>([^<]*?)</span></div>\s*<h3>([^<]*?)</h3>\s*<p>([^<]*?)</p>\s*</a>\s*</li>').findall(
+            page_source)
+
+        matchEpisodio = re.compile(
+            '<li class="resultado-episodio">\s*<a href="(/video/.+?)">\s*<div class="thumb" style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)\)"><span class="duration">([\d:]*)</span>\s*</div>\s*<div class="details">([^<]*?)</div>\s*<h3>([^<]*?)</h3>\s*<p>([^<]*?)</p>\s*</a>\s*</li>').findall(
+            page_source)
+        totalit=len(matchPrograma)+len(matchEpisodio)
+        i = 0
+        for urlsbase, thumbnail, ano, tipo, titulo, sinopse in matchPrograma:
+            i += 1
+            information = {"Title": titulo, "plot": title_clean_up(ano + " " + tipo+" "+sinopse)}
+            addprograma(titulo, base_url + urlsbase, 13, thumbnail, totalit, information)
+
+        for urlsbase, thumbnail, duracao,nomeSerie, titulo, sinopse in matchEpisodio:
+            i += 1
+            titulo = title_clean_up(titulo)
+            sinopse = title_clean_up(sinopse)
+            information = {"Title": titulo, "tvshowtitle": nomeSerie, "plot": sinopse,
+                           "duration": convert_to_minutes(duracao)}
+
+            addepisode(titulo, base_url + urlsbase, 17, thumbnail, totalit, information,thumbnail)
+        if(len(matchEpisodio)>=10):
+            addDir("Proxima Página", getProximaPagina(url), 19, os.path.join(artfolder, "next.png"), 1)
 
 
 def get_show_episode_parts(name, url, iconimage):
