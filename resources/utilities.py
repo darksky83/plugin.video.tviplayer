@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """
- Author: enen92 
+ Author: darksky83
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ def translate(text):
 def convert_to_minutes(duration):
     try:
         split = re.compile('(\d+):(\d+):(\d+)').findall(duration)
-        return int(split[0][0])*60 + int(split[0][1])
+        return int(split[0][0])*3600 + int(split[0][1])*60 + int(split[0][2])
     except: return '0'
 
 def setview(setting_name):
@@ -95,6 +95,8 @@ def getListaProgramasUrl(ano='', letra='', canal='', categoria='' ,pagina='1'):
 
 def getProximaPagina(url):
     x =url.rindex('/')
-    newUrl =url[:x+1] + str(int(url[x+1:])+1)
-    print "getProximaPagina="+newUrl
+    try:
+        newUrl =url[:x+1] + str(int(url[x+1:])+1)
+    except:
+        newUrl =url+'/2'
     return newUrl

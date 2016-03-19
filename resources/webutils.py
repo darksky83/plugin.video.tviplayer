@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """
- Author: enen92 
+ Author: darksky83
 
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  
 """
 
-import urllib2,xbmcvfs,sys,logging
+import xbmcvfs
 from common_variables import *
 from net import Net
 
@@ -30,17 +30,13 @@ def abrir_url(url ,referer = base_url):
 
     net = Net(cookie_file=cookie_TviFile, proxy='', user_agent=user_agent, http_debug=True)
     if os.path.exists(cookie_TviFile): net.set_cookies(cookie_TviFile)
-    print cookie_TviFile
     try:
         ref_data = {'Referer':referer}
         html = net.http_GET(url,headers=ref_data).content.encode('latin-1', 'ignore')
         net.save_cookies(cookie_TviFile)
         return html
-    except urllib2.HTTPError, e:
-        logging.exception("HTTPError on abrir_url")
-    except urllib2.URLError, e:
-        logging.exception("URLError on abrir_url")
-
+    except:
+        return ''
 
 
 
@@ -52,8 +48,5 @@ def post_url(actionUrl,data = {},referer= base_url):
         html = net.http_POST(actionUrl,form_data=data,headers=ref_data).content.encode('latin-1', 'ignore')
         net.save_cookies(cookie_TviFile)
         return html
-    except urllib2.HTTPError, e:
-        logging.exception("HTTPError on post_url")
-    except urllib2.URLError, e:
-        logging.exception("URLError on post_url")
-
+    except:
+        return ''

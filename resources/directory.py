@@ -38,9 +38,6 @@ def addprograma(name,url,mode,iconimage,number_of_items,information,fanart_image
     else:
         liz.setProperty('fanart_image', fanart_image)
     liz.setInfo( type="Video", infoLabels=information)
-    contextMenuItems = []
-    savepath = programafav
-    liz.addContextMenuItems(contextMenuItems, replaceItems=False)
     ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True,totalItems=number_of_items)
     return ok
 
@@ -48,7 +45,6 @@ def addprograma(name,url,mode,iconimage,number_of_items,information,fanart_image
 def addepisode(name,url,mode,iconimage, number_of_items,information,fanart_image):
     u=sys.argv[0]+"?url="+urllib.quote_plus(url)+"&mode="+str(mode)+"&name="+urllib.quote_plus(name)+"&iconimage="+urllib.quote_plus(iconimage)
     ok=True
-    contextMenuItems = []
     liz=xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=iconimage)
     if fanart_image=='':
         liz.setProperty('fanart_image', os.path.join(artfolder,'fanart.png'))
@@ -56,7 +52,6 @@ def addepisode(name,url,mode,iconimage, number_of_items,information,fanart_image
         liz.setProperty('fanart_image', fanart_image)
 
     liz.setInfo( type="Video", infoLabels=information)
-    liz.addContextMenuItems(contextMenuItems, replaceItems=False)
     ok=xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=False,totalItems=number_of_items)
     return ok
 

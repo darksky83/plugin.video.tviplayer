@@ -33,8 +33,5 @@ selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
 addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
 artfolder = os.path.join(addonfolder,'resources','img')
-programafav = os.path.join(datapath,'favoritos')
-watched_folder = os.path.join(datapath,'watched')
-watched_database = os.path.join(datapath,'watched','watched.db')
 cookie_TviFile = os.path.join(datapath,'cookieTvi.db')
 msgok = xbmcgui.Dialog().ok

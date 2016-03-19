@@ -26,15 +26,12 @@ from resources.directory import *
 from resources.webutils import *
 from resources.ondemand import *
 
-
 """ 40002 """
 def main_menu():
-    """addDir(translate(40010) ,'http://tviplayer.iol.pt',40010, os.path.join(artfolder,'pesquisar.png'),1)"""
     addDir(translate(40011) ,'http://tviplayer.iol.pt',40011, os.path.join(artfolder,'porcanal.png'),1)
     addDir(translate(40012) ,'http://tviplayer.iol.pt',40012, os.path.join(artfolder,'portema.png'),1)
     addDir(translate(40013) ,'http://tviplayer.iol.pt',40013, os.path.join(artfolder,'az.png'),1)
     addDir(translate(40014) ,'http://tviplayer.iol.pt',40014, os.path.join(artfolder,'pesquisa.png'),1)
-
 
 
 """ 40011 """

@@ -21,6 +21,8 @@ from _codecs import encode
 from cgitb import enable
 from platform import mac_ver
 
+from PIL._imaging import outline
+
 import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs, sys, os, re,json
 from common_variables import *
 from directory import *
@@ -49,7 +51,7 @@ def list_tv_shows(name, url):
             addprograma(titulo, base_url + urlsbase, 13, thumbnail, totalit, information)
 
         if (i == 12):
-            addDir("Proxima Página", getProximaPagina(url), 15, os.path.join(artfolder, "next.png"), 1)
+            addDir(translate(30028), getProximaPagina(url), 15, os.path.join(artfolder, "next.png"), 1)
         xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
         setview('show-view')
     else:
@@ -65,26 +67,43 @@ def list_tv_shows_info(name, url, thumbnail, plot):
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
+        temporada_actual = '1'
+        outras_temporadas  = []
+        temporadas = re.search('<ul class="temporadas">((?:\s*<li><a href="/programa/[^"]+?/t\d+"\s* class="\w*">[^<]*</a></li>\s*)+)</ul>',page_source)
+        if temporadas:
+            matchTemporada = re.compile('<li><a href="(/programa/[^"]+?/t(\d+))"\s* class="(\w*)">([^<]*)</a></li>').findall(temporadas.group(1))
+            if matchTemporada:
+                for url, temporada , atual, descricao in matchTemporada:
+                    print "Encontrada temporada=" + temporada + ", url=" + url + ", atual=" + atual + ", descricao=" + descricao
+                    if atual=="selected":
+                        temporada_actual = temporada
+                    else:
+                        outras_temporadas.append([url,descricao])
 
-        episodiosMatch = re.compile('href="#lista-episodios"><strong>([^<]*)</strong>([^<]*)</a>').findall(page_source)
-        if (len(episodiosMatch) > 0):
-            titulo = "Episodidos:" + name
+        episodiosMatch = re.search('href="#lista-episodios"><strong>([^<]*)</strong>([^<]*)</a>',page_source)
+        if episodiosMatch:
+            titulo = title_clean_up(episodiosMatch.group(1) + episodiosMatch.group(2))
             information = {"Title": titulo, "plot": plot}
-            addprograma(titulo, getAjaxUrl(programaId, '1', 'episodios', '1'), 16, thumbnail, 1, information, thumbnail)
+            addprograma(titulo, getAjaxUrl(programaId, temporada_actual, 'episodios', '1'), 16, thumbnail, 1, information, thumbnail)
 
-        clipsMatch = re.compile('href="#lista-clips"><strong>([^<]*)</strong>([^<]*)</a>').findall(page_source)
-        if (len(clipsMatch) > 0):
-            titulo = "Clips:" + name
+        clipsMatch = re.search('href="#lista-clips"><strong>([^<]*)</strong>([^<]*)</a>',page_source)
+        if clipsMatch:
+            titulo = title_clean_up(clipsMatch.group(1) + clipsMatch.group(2))
             information = {"Title": titulo, "plot": plot}
-            addprograma(titulo, getAjaxUrl(programaId, '1', 'clips', '1'), 16, thumbnail, 1, information, thumbnail)
+            addprograma(titulo, getAjaxUrl(programaId, temporada_actual, 'clips', '1'), 16, thumbnail, 1, information, thumbnail)
 
-        popularesMatch = re.compile('href="#lista-populares"><strong>([^<]*)</strong>([^<]*)</a>').findall(page_source)
-        if (len(popularesMatch) > 0):
-            titulo = "Populares:" + name
+        popularesMatch = re.search('href="#lista-populares"><strong>([^<]*)</strong>([^<]*)</a>',page_source)
+        if popularesMatch:
+            titulo = title_clean_up(popularesMatch.group(1) + popularesMatch.group(2))
             information = {"Title": titulo, "plot": plot}
-            addprograma(titulo, getAjaxUrl(programaId, '1', 'populares', '1'), 16, thumbnail, 1, information, thumbnail)
+            addprograma(titulo, getAjaxUrl(programaId, temporada_actual, 'populares', '1'), 16, thumbnail, 1, information, thumbnail)
 
         xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+
+        if len(outras_temporadas)>0:
+            for url, descricao in outras_temporadas:
+                information = {"Title": "Ver Temporada "+ descricao, "plot": plot}
+            addprograma("Ver Temporada "+ descricao, base_url + url, 13, thumbnail, 1, information,thumbnail)
         setview('episodes-view')
     else:
         sys.exit(0)
@@ -94,6 +113,7 @@ def list_episodes(name, url, thumbnail, plot):
     try:
         page_source = abrir_url(url)
     except:
+        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -111,7 +131,7 @@ def list_episodes(name, url, thumbnail, plot):
                            "duration": convert_to_minutes(duration)}
             addepisode(sinopse, base_url + urlsbase, 17, icon, matched, information, thumbnail)
         if (matched >= 18):
-            addprograma("Proxima Página", getProximaPagina(url), 16, os.path.join(artfolder, "next.png"), 1, plot, thumbnail)
+            addprograma(translate(30028), getProximaPagina(url), 16, os.path.join(artfolder, "next.png"), 1, plot, thumbnail)
 
 
         xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
@@ -166,6 +186,7 @@ def resultadosPesquisa( url ):
     try:
         page_source = abrir_url(url)
     except:
+        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -192,7 +213,7 @@ def resultadosPesquisa( url ):
 
             addepisode(titulo, base_url + urlsbase, 17, thumbnail, totalit, information,thumbnail)
         if(len(matchEpisodio)>=10):
-            addDir("Proxima Página", getProximaPagina(url), 19, os.path.join(artfolder, "next.png"), 1)
+            addDir(translate(30028), getProximaPagina(url), 19, os.path.join(artfolder, "next.png"), 1)
 
 
 def get_show_episode_parts(name, url, iconimage):
