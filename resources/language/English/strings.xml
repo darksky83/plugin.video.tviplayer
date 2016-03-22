@@ -2,7 +2,6 @@
 <strings>
 
 	<string id="30001">TVI Player</string>
-    
     <!-- addon.py -->
     <string id="40001">Live channels</string>
     <string id="40002">Shows</string>
@@ -14,6 +13,7 @@
     <string id="30018">Couldn't open URL / Check your connection</string>
     <!-- ondemand.py -->
     <string id="30026">Information not available.</string>
+    <string id="30027">See Season </string>
     <string id="30028">Next >></string>
     <string id="30031">Enter search string</string>
 	<!-- settings.xml -->

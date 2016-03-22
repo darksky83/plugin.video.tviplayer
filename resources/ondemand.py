@@ -102,8 +102,8 @@ def list_tv_shows_info(name, url, thumbnail, plot):
 
         if len(outras_temporadas)>0:
             for url, descricao in outras_temporadas:
-                information = {"Title": "Ver Temporada "+ descricao, "plot": plot}
-            addprograma("Ver Temporada "+ descricao, base_url + url, 13, thumbnail, 1, information,thumbnail)
+                information = {"Title": translate(30027) + " " + descricao, "plot": plot}
+            addprograma(translate(30027) + " "+ descricao, base_url + url, 13, thumbnail, 1, information,thumbnail)
         setview('episodes-view')
     else:
         sys.exit(0)
