@@ -29,7 +29,7 @@ def list_tv_shows(name, url):
     try:
         page_source = abrir_url(url)
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -57,7 +57,7 @@ def list_tv_shows_info(name, url, thumbnail, plot):
         page_source = abrir_url(url)
         programaId = getProgramaId(url);
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -68,7 +68,7 @@ def list_tv_shows_info(name, url, thumbnail, plot):
             matchTemporada = re.compile('<li><a href="(/programa/[^"]+?/t(\d+))"\s* class="(\w*)">([^<]*)</a></li>').findall(temporadas.group(1))
             if matchTemporada:
                 for url, temporada , atual, descricao in matchTemporada:
-                    print "Encontrada temporada=" + temporada + ", url=" + url + ", atual=" + atual + ", descricao=" + descricao
+                    xbmc.log("TVI-KODI-PLAYER Encontrada temporada=" + temporada + ", url=" + url + ", atual=" + atual + ", descricao=" + descricao)
                     if atual=="selected":
                         temporada_actual = temporada
                     else:
@@ -107,7 +107,7 @@ def list_episodes(name, url, thumbnail, plot):
     try:
         page_source = abrir_url(url)
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -117,8 +117,7 @@ def list_episodes(name, url, thumbnail, plot):
         matched = len(match)
 
         for urlsbase, icon, data, duration, titulo, sinopse in match:
-            print "Encontrado urlsbase=" + urlsbase + ", thumbnail=" + thumbnail + ", data=" + data + ">" + format_data(
-                data) + ", duration=" + duration + ", titulo=" + titulo + ", sinopse=" + sinopse
+            xbmc.log("Encontrado urlsbase=" + urlsbase + ", thumbnail=" + thumbnail + ", data=" + format_data(data) + ", duration=" + duration + ", titulo=" + titulo + ", sinopse=" + sinopse)
             titulo = title_clean_up(titulo)
             sinopse = title_clean_up(sinopse)
             information = {"Title": titulo, "tvshowtitle": name, "plot": sinopse, "aired": format_data(data),
@@ -180,7 +179,7 @@ def resultadosPesquisa( url ):
     try:
         page_source = abrir_url(url)
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
@@ -214,7 +213,7 @@ def get_show_episode_parts(name, url, iconimage):
     try:
         source = abrir_url(url)
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         source = ''
 
     if source:
@@ -222,7 +221,6 @@ def get_show_episode_parts(name, url, iconimage):
 
         if match and match[0]:
             link = match[0][0] + tvi_resolver(match[0][0] + 'playlist.m3u8?' + match[0][1]).replace("%3D", "=")
-            print link
             playlist = xbmc.PlayList(1)
             playlist.clear()
             liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -240,7 +238,7 @@ def tvi_resolver(url):
     try:
         source = abrir_url(url)
     except:
-        print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+        xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         source = ''
     if source:
         try:
@@ -256,7 +254,7 @@ def tvi_resolver(url):
             if match[0][0]:
                 return match[0]
         except:
-            print "Unexpected error:", sys.exc_info()[0], sys.exc_info()[1]
+            xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
             return ''
     else:
         msgok(translate(30001), translate(30018))
