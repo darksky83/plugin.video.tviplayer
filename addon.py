@@ -20,7 +20,6 @@
 
 import urllib,urllib2,re,xbmcplugin,xbmcgui,xbmc,xbmcaddon,xbmcvfs
 import os,sys
-from _ast import mod
 
 from resources.common_variables import *
 from resources.utilities import *
