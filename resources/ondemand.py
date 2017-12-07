@@ -17,11 +17,13 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
-import xbmc, xbmcgui, xbmcaddon, xbmcplugin, xbmcvfs, sys, os, re, json
-from common_variables import *
-from directory import *
-from webutils import *
-from utilities import *
+import xbmc
+import xbmcgui
+import xbmcplugin
+
+from resources.directory import *
+from resources.utilities import *
+from resources.webutils import *
 
 
 def list_tv_shows(name, url):
@@ -158,7 +160,7 @@ def list_emissoes(urltmp):
                         try:
                             source = abrir_url(base_url + urlsbase)
                             sinopse = re.findall('id="promo">.+?\n.+?<p>(.*?)</p>', source, re.DOTALL)
-                            if sinopse: plot = clean_html(title_clean_up(sinopse[0]))
+                            if sinopse: plot = clean_html(title_clean_up(sinopse[0])) # FIXME: clean?
                             information = {"Title": title_clean_up(titulo), "plot": plot}
                             try:
                                 thumbnail = img_base_url + re.compile('src=(.+?)&amp').findall(source)[0]
@@ -234,6 +236,7 @@ def get_show_episode_parts(name, url, iconimage):
         if match and match[0]:
             link = match[0][0] + tvi_resolver(match[0][0] + 'playlist.m3u8?' + match[0][1]).replace("%3D", "=")
             abrir_url(link)
+
             playlist = xbmc.PlayList(1)
             playlist.clear()
             liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
@@ -245,6 +248,31 @@ def get_show_episode_parts(name, url, iconimage):
 
     else:
         msgok(translate(30001), translate(30018));
+        sys.exit(0)
+
+
+def get_show_direto(name, url, iconimage):
+    xbmc.log("Get Show Url: " + url)
+    # try:
+    #     source = abrir_url(url)
+    # except:
+    #     xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
+    #     source = ''
+    #
+    # #xbmc.log("###2" + source)
+    try:
+        playlist = xbmc.PlayList(1)
+        playlist.clear()
+        liz = xbmcgui.ListItem(name, iconImage="DefaultVideo.png", thumbnailImage=iconimage)
+        liz.setInfo('Video', {})
+        liz.setProperty('mimetype', 'video')
+        playlist.add(url, liz)
+        player = xbmc.Player()
+        player.play(playlist)
+        xbmc.log("DVD closed")
+
+    except:
+        msgok(translate(30001), translate(30018))
         sys.exit(0)
 
 

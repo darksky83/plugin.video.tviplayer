@@ -33,6 +33,7 @@ from resources.ondemand import *
 def main_menu():
     addDir(translate(40011), 'http://tviplayer.iol.pt', 40011, os.path.join(artfolder, 'porcanal.png'), 1)
     addDir(translate(40012), 'http://tviplayer.iol.pt', 40012, os.path.join(artfolder, 'portema.png'), 1)
+    addDir(translate(40015), 'http://tviplayer.iol.pt', 40015, os.path.join(artfolder, 'az.png'), 1)
     addDir(translate(40013), 'http://tviplayer.iol.pt', 40013, os.path.join(artfolder, 'az.png'), 1)
     addDir(translate(40014), 'http://tviplayer.iol.pt', 40014, os.path.join(artfolder, 'pesquisa.png'), 1)
 
@@ -64,6 +65,24 @@ def programas_categoria_menu(name):
     for cod_catgegoria, nome_categoria in categorias:
         addDir(nome_categoria, getListaProgramasUrl(categoria=cod_catgegoria), 15,
                os.path.join(artfolder, 'por_tema.png'), len(categorias))
+
+
+
+
+""" 40015 """
+def programas_direto():
+#    canais = [['TVI 24', 'TVI24', 'logo-TVI24.png'], ['TVI', 'TVI', 'logo-TVI.png']]
+    canais = [['TVI 24', 'TVI24', 'logo-TVI24.png', 'High'],
+              ['TVI 24', 'TVI24', 'logo-TVI24.png', 'Low'],
+              ['TVI', 'TVI', 'logo-TVI.png', 'High'],
+              ['TVI', 'TVI', 'logo-TVI.png', 'Low']]
+
+    source = get_direto_source(canais)
+
+    for nome_canal, codigo_canal, img_canal, quality in canais:
+        addDir(nome_canal + " " + quality, getListaDiretoUrl(source, quality, canal=codigo_canal), 20, os.path.join(artfolder, 'logo-TVI24.png'),
+               len(canais))
+
 
 
 """ 40013 """
@@ -147,6 +166,8 @@ elif mode == 40012:
     programas_categoria_menu(name)
 elif mode == 40013:
     programas_az_menu(name)
+elif mode == 40015:
+    programas_direto()
 elif mode == 3:
     list_episodes(name, url, plot)
 elif mode == 13:
@@ -159,9 +180,13 @@ elif mode == 16:
     list_episodes(name, url, iconimage, plot)
 elif mode == 17:
     get_show_episode_parts(name, url, iconimage)
+elif mode == 20:
+    get_show_direto(name, url, iconimage)
+    programas_direto()  # FIXME: Dirty hack to exit On Air
 elif mode == 40014:
     pesquisar()
 elif mode == 19:
     resultadosPesquisa(url)
+
 
 xbmcplugin.endOfDirectory(int(sys.argv[1]))

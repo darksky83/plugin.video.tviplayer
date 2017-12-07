@@ -17,10 +17,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
-import os
-import xbmc
-import xbmcaddon
-import xbmcgui
+import xbmc, xbmcgui, xbmcaddon, os
 
 base_url = 'http://tviplayer.iol.pt/'
 img_base_url = 'http://www.iol.pt/multimedia/oratvi/multimedia/imagem/'
@@ -31,6 +28,14 @@ mensagemok = xbmcgui.Dialog().ok
 user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0"
 default_flash_Referer = "http://p.jwpcdn.com/6/12/jwplayer.flash.swf"
 pesquisa_url = "http://tviplayer.iol.pt/pesquisa/"
+direto_url = "http://tviplayer.iol.pt/direto/"  # TODO:
+headers = {"Accept": "*/*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Connection": "keep-alive",
+            "Referer": "http://tviplayer.iol.pt/direto",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu "
+            "Chromium/62.0.3202.94 "
+            "Chrome/62.0.3202.94 Safari/537.366"}
 
 selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
