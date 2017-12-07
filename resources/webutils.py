@@ -18,7 +18,9 @@
  
 """
 
-import xbmc, xbmcvfs
+import xbmc
+import xbmcvfs
+
 from resources.common_variables import *
 from resources.net import Net
 
