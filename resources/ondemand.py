@@ -20,6 +20,7 @@
 import xbmc
 import xbmcgui
 import xbmcplugin
+import urllib2
 
 from resources.directory import *
 from resources.utilities import *
@@ -257,7 +258,7 @@ def get_show_direto(name, url, iconimage):
             req = urllib2.Request(url, headers=headers)
             source = urllib2.urlopen(req).read()
     except:
-        xbmc.log("Can't parse url:" + url)
+        xbmc.log("Can't parse url: " + url)
         msgok(translate(30001), translate(30018))
         sys.exit(0)
 
