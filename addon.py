@@ -18,13 +18,8 @@
  
 """
 
-import urllib, urllib2, re, xbmcplugin, xbmcgui, xbmc, xbmcaddon, xbmcvfs
-import os, sys
-
-from resources.common_variables import *
-from resources.utilities import *
-from resources.directory import *
-from resources.webutils import *
+import xbmc
+import xbmcplugin
 from resources.ondemand import *
 
 """ 40002 """
@@ -71,16 +66,10 @@ def programas_categoria_menu(name):
 
 """ 40015 """
 def programas_direto():
-#    canais = [['TVI 24', 'TVI24', 'logo-TVI24.png'], ['TVI', 'TVI', 'logo-TVI.png']]
-    canais = [['TVI 24', 'TVI24', 'logo-TVI24.png', 'High'],
-              ['TVI 24', 'TVI24', 'logo-TVI24.png', 'Low'],
-              ['TVI', 'TVI', 'logo-TVI.png', 'High'],
-              ['TVI', 'TVI', 'logo-TVI.png', 'Low']]
+    canais = [['TVI 24', 'TVI24', 'logo-TVI24.png'], ['TVI', 'TVI', 'logo-TVI.png']]
 
-    source = get_direto_source(canais)
-
-    for nome_canal, codigo_canal, img_canal, quality in canais:
-        addDir(nome_canal + " " + quality, getListaDiretoUrl(source, quality, canal=codigo_canal), 20, os.path.join(artfolder, 'logo-TVI24.png'),
+    for nome_canal, codigo_canal, img_canal in canais:
+        addDir(nome_canal, getListaDiretoUrl(canal=codigo_canal), 20, os.path.join(artfolder, 'logo-TVI24.png'),
                len(canais))
 
 
@@ -182,7 +171,7 @@ elif mode == 17:
     get_show_episode_parts(name, url, iconimage)
 elif mode == 20:
     get_show_direto(name, url, iconimage)
-    programas_direto()  # FIXME: Dirty hack to exit On Air
+    programas_direto()  # FIXME: Dirty hack to exit from Direct
 elif mode == 40014:
     pesquisar()
 elif mode == 19:

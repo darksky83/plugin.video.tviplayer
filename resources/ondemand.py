@@ -252,14 +252,57 @@ def get_show_episode_parts(name, url, iconimage):
 
 
 def get_show_direto(name, url, iconimage):
+    # Get source html
+    try:
+            req = urllib2.Request(url, headers=headers)
+            source = urllib2.urlopen(req).read()
+    except:
+        xbmc.log("Can't parse url:" + url)
+        msgok(translate(30001), translate(30018))
+        sys.exit(0)
+
+    # Processing - get session/wms/host
+    try:
+        session_string = re.search('nimblesessionid=(\w+)', source).group(0)
+        xbmc.log("Session: " + session_string)
+    except:
+        session_string = ""
+        xbmc.log("Session: None ")
+
+    try:
+        wms_string = re.search('wmsAuthSign=(\w+)', source).group(0)
+        xbmc.log("WMS ID: " + wms_string)
+    except:
+        wms_string = ""
+        xbmc.log("WMS ID: None ")
+
+    try:
+        host_string = re.search('https://[a-zA-Z0-9.\-/_]*playlist.m3u8', source).group(0)
+        xbmc.log("Balancer host: " + host_string)
+    except:
+        host_string = "localhost"
+        xbmc.log("Balancer host: None")
+
+    tipostr = selfAddon.getSetting('tipostr')
+
+    if tipostr == '0':
+        quality = 3
+    elif tipostr == '1':
+        quality = 5
+    else: quality = 7
+
+    # Chunks construction
+    url_playlist = host_string + "?" + wms_string
+    xbmc.log("Playlist URL:" + url_playlist)
+    req = urllib2.Request(url_playlist, headers=headers)
+    chunks = urllib2.urlopen(req).read()
+    chunks_array = chunks.split("\n")
+    url_short = url_playlist.split("playlist")[0]
+    url = url_short + chunks_array[quality]
+
+    # URL Processing
     xbmc.log("Get Show Url: " + url)
-    # try:
-    #     source = abrir_url(url)
-    # except:
-    #     xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
-    #     source = ''
-    #
-    # #xbmc.log("###2" + source)
+
     try:
         playlist = xbmc.PlayList(1)
         playlist.clear()

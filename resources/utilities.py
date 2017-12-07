@@ -21,7 +21,6 @@ from datetime import date, timedelta
 
 import logging
 import re
-import urllib2
 import xbmc
 
 from resources.common_variables import *
@@ -164,68 +163,8 @@ def getListaProgramasUrl(ano='', letra='', canal='', categoria='', pagina='1'):
         ano, letra, canal, categoria, pagina)
 
 
-def get_direto_source(canais): # TODO: Only TVI24 !!!
-    try:
-        for canal in canais:
-            req = urllib2.Request(direto_url + canal[1], headers=headers)
-            return urllib2.urlopen(req).read()
-    except:
-        xbmc.log("Can't parse, url")
-        return None
-
-
-def getListaDiretoUrl(initstring, quality, canal=''):
-    # xbmc.log("FULL content" + initstring)
-
-    def session(initstring):
-        try:
-            session_string = re.search('nimblesessionid=(\w+)', initstring).group(0)
-            xbmc.log("Session: " + session_string)
-        except:
-            session_string = ""
-            xbmc.log("Session: None ")
-        return session_string
-
-    def wmsauth(initstring):
-        try:
-            wms_string = re.search('wmsAuthSign=(\w+)', initstring).group(0)
-            xbmc.log("WMS ID: " + wms_string)
-        except:
-            wms_string = ""
-            xbmc.log("WMS ID: None ")
-        return wms_string
-
-    def get_host(initstring):
-        try:
-            host_string = re.search('https://[a-zA-Z0-9.\-/_]*playlist.m3u8', initstring).group(0)
-            xbmc.log("Balancer host: " + host_string)
-        except:
-            host_string = "localhost"
-            xbmc.log("Balancer host: None")
-        return host_string
-
-    def set_quality():
-        if quality is 'High':
-            return 3
-        elif quality is 'Low':
-            return 7
-        else:
-            return 5
-
-    def chunk_updater(url):
-        url_playlist = get_host(initstring) + "?" + str(wmsauth(initstring))
-        session(initstring)
-        xbmc.log("Playlist URL:" + url_playlist)
-        req = urllib2.Request(url_playlist, headers=headers)
-        ##req = urllib2.urlopen(url_playlist)
-        chunks = urllib2.urlopen(req).read()
-        chunks_array = chunks.split("\n")
-        url_short = url_playlist.split("playlist")[0]
-
-        return url_short + chunks_array[set_quality()]  # TODO: Make choosing quality more transparent
-
-    xbmc.log("Channel URL: " + direto_url + canal)
-    return chunk_updater(direto_url + canal)
+def getListaDiretoUrl(canal=''):
+    return direto_url + canal
 
 
 def getProximaPagina(url):

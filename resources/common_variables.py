@@ -17,7 +17,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
-import xbmc, xbmcgui, xbmcaddon, os
+import os
+import xbmc
+import xbmcaddon
+import xbmcgui
 
 base_url = 'http://tviplayer.iol.pt/'
 img_base_url = 'http://www.iol.pt/multimedia/oratvi/multimedia/imagem/'

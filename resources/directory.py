@@ -17,8 +17,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
-import xbmc, xbmcplugin, xbmcaddon, xbmcgui, sys, os, urllib, xbmcvfs
-from utilities import *
+import sys
+import urllib
+import xbmcgui
+import xbmcplugin
 from common_variables import *
 
 
