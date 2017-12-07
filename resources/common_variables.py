@@ -17,7 +17,10 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  
 """
-import xbmc,xbmcgui,xbmcaddon,os
+import os
+import xbmc
+import xbmcaddon
+import xbmcgui
 
 base_url = 'http://tviplayer.iol.pt/'
 img_base_url = 'http://www.iol.pt/multimedia/oratvi/multimedia/imagem/'
@@ -27,11 +30,11 @@ addon_id = 'plugin.video.tviplayer'
 mensagemok = xbmcgui.Dialog().ok
 user_agent = "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:41.0) Gecko/20100101 Firefox/41.0"
 default_flash_Referer = "http://p.jwpcdn.com/6/12/jwplayer.flash.swf"
-pesquisa_url="http://tviplayer.iol.pt/pesquisa/"
+pesquisa_url = "http://tviplayer.iol.pt/pesquisa/"
 
 selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
 addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
-artfolder = os.path.join(addonfolder,'resources','img')
-cookie_TviFile = os.path.join(datapath,'cookieTvi.db')
+artfolder = os.path.join(addonfolder, 'resources', 'img')
+cookie_TviFile = os.path.join(datapath, 'cookieTvi.db')
 msgok = xbmcgui.Dialog().ok
