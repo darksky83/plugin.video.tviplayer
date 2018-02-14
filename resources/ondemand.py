@@ -57,12 +57,17 @@ def list_tv_shows(name, url):
 def list_tv_shows_info(name, url, thumbnail, plot):
     try:
         page_source = abrir_url(url)
-        programaId = getProgramaId(url);
+        programaId = getProgramaId(url)
     except:
         xbmc.log('Unexpected error: {0:s} :{1:s}'.format(sys.exc_info()[0], sys.exc_info()[1]))
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
+        videosMatch = re.search('href="#lista-clips"><strong>V.deos</strong>([^<]*)</a>', page_source)
+        if videosMatch:
+            xbmc.log("TVI-KODI-PLAYER encontrado marcador videos")
+            parse_episodes(name, page_source, plot, thumbnail, url)
+            return
         temporada_actual = '1'
         outras_temporadas = []
         temporadas = re.search(
@@ -121,27 +126,29 @@ def list_episodes(name, url, thumbnail, plot):
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
-        match = re.compile(
-            '<a href="(/programa/.+?)" class="item " style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)/350\);;" target="_top">\s*<div class="item-details">.*\s*<br /><span class="item-date">([^<]*?)</span><span class="item-duration">([\d:]*)</span><span class="item-program-title">([^<]*?)</span><span class="item-title">([^<]*?)</span>\s*</div>').findall(
-            page_source)
-        matched = len(match)
-
-        for urlsbase, icon, data, duration, titulo, sinopse in match:
-            xbmc.log("Encontrado urlsbase=" + urlsbase + ", thumbnail=" + thumbnail + ", data=" + format_data(
-                data) + ", duration=" + duration + ", titulo=" + titulo + ", sinopse=" + sinopse)
-            titulo = title_clean_up(titulo)
-            sinopse = title_clean_up(sinopse)
-            information = {"Title": titulo, "tvshowtitle": name, "plot": sinopse, "aired": format_data(data),
-                           "duration": convert_to_minutes(duration)}
-            addepisode(sinopse, base_url + urlsbase, 17, icon, matched, information, thumbnail)
-        if (matched >= 18):
-            addprograma(translate(30028), getProximaPagina(url), 16, os.path.join(artfolder, "next.png"), 1, plot,
-                        thumbnail)
-
-        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
-        setview('episodes-view')
+        parse_episodes(name, page_source, plot, thumbnail, url)
     else:
         sys.exit(0)
+
+
+def parse_episodes(name, page_source, plot, thumbnail, url):
+    match = re.compile(
+        '<a href="(/programa/.+?)" class="item " style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)/\d+\);;" target="_top">\s*<div[^>]*>\s*<div class="item-details">.*\s*<br /><span class="item-date">([^<]*?)</span><span class="item-duration">([\d:]*)</span><span class="item-program-title">([^<]*?)</span><span class="item-title">([^<]*?)</span>\s*</div>').findall(
+        page_source)
+    matched = len(match)
+    for urlsbase, icon, data, duration, titulo, sinopse in match:
+        xbmc.log("Encontrado urlsbase=" + urlsbase + ", thumbnail=" + thumbnail + ", data=" + format_data(
+            data) + ", duration=" + duration + ", titulo=" + titulo + ", sinopse=" + sinopse)
+        titulo = title_clean_up(titulo)
+        sinopse = title_clean_up(sinopse)
+        information = {"Title": titulo, "tvshowtitle": name, "plot": sinopse, "aired": format_data(data),
+                       "duration": convert_to_minutes(duration)}
+        addepisode(sinopse, base_url + urlsbase, 17, icon, matched, information, thumbnail)
+    if (matched >= 18):
+        addprograma(translate(30028), getProximaPagina(url), 16, os.path.join(artfolder, "next.png"), 1, plot,
+                    thumbnail)
+    xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+    setview('episodes-view')
 
 
 def list_emissoes(urltmp):
@@ -203,7 +210,7 @@ def resultadosPesquisa(url):
             page_source)
 
         matchEpisodio = re.compile(
-            '<li class="resultado-episodio">\s*<a href="(/video/.+?)">\s*<div class="thumb" style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)\)"><span class="duration">([\d:]*)</span>\s*</div>\s*<div class="details">([^<]*?)</div>\s*<h3>([^<]*?)</h3>\s*<p>([^<]*?)</p>\s*</a>\s*</li>').findall(
+            '<li class="resultado-episodio">\s*<a href="(/programa/.+?)">\s*<div class="thumb" style="background-image: url\((http://www.iol.pt/multimedia/oratvi/multimedia/imagem/id/[\d\w]+?)\)"><span class="duration">([\d:]*)</span>\s*</div>\s*<div class="details">([^<]*?)</div>\s*<h3>([^<]*?)</h3>\s*<p>([^<]*?)</p>\s*</a>\s*</li>').findall(
             page_source)
         totalit = len(matchPrograma) + len(matchEpisodio)
         i = 0
@@ -255,8 +262,7 @@ def get_show_episode_parts(name, url, iconimage):
 def get_show_direto(name, url, iconimage):
     # Get source html
     try:
-            req = urllib2.Request(url, headers=headers)
-            source = urllib2.urlopen(req).read()
+        source = abrir_url(url)
     except:
         xbmc.log("Can't parse url: " + url)
         msgok(translate(30001), translate(30018))
@@ -295,8 +301,7 @@ def get_show_direto(name, url, iconimage):
     # Chunks construction
     url_playlist = host_string + "?" + wms_string
     xbmc.log("Playlist URL:" + url_playlist)
-    req = urllib2.Request(url_playlist, headers=headers)
-    chunks = urllib2.urlopen(req).read()
+    chunks = abrir_url(url_playlist)
     chunks_array = chunks.split("\n")
     url_short = url_playlist.split("playlist")[0]
     url = url_short + chunks_array[quality]
