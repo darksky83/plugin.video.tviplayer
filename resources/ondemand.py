@@ -63,15 +63,10 @@ def list_tv_shows_info(name, url, thumbnail, plot):
         page_source = ''
         msgok(translate(30001), translate(30018))
     if page_source:
-        videosMatch = re.search('href="#lista-clips"><strong>V.deos</strong>([^<]*)</a>', page_source)
-        if videosMatch:
-            xbmc.log("TVI-KODI-PLAYER encontrado marcador videos")
-            parse_episodes(name, page_source, plot, thumbnail, url)
-            return
         temporada_actual = '1'
         outras_temporadas = []
         temporadas = re.search(
-            '<ul class="temporadas">((?:\s*<li><a href="/programa/[^"]+?/t\d+"\s* class="\w*">[^<]*</a></li>\s*)+)</ul>',
+            '<ul class="temporadas">(?:\s*<li>\s*</li>\s*)?((?:\s*<li><a href="/programa/[^"]+?/t\d+"\s* class="\w*">[^<]*</a></li>\s*)+)</ul>',
             page_source)
         if temporadas:
             matchTemporada = re.compile(
@@ -93,7 +88,7 @@ def list_tv_shows_info(name, url, thumbnail, plot):
             addprograma(titulo, getAjaxUrl(programaId, temporada_actual, 'episodios', '1'), 16, thumbnail, 1,
                         information, thumbnail)
 
-        clipsMatch = re.search('href="#lista-clips"><strong>([^<]*)</strong>([^<]*)</a>', page_source)
+        clipsMatch = re.search('href="#lista-clips"><strong>\s*(Clipes)\s*</strong>([^<]*)</a>', page_source)
         if clipsMatch:
             titulo = title_clean_up(clipsMatch.group(1) + clipsMatch.group(2))
             information = {"Title": titulo, "plot": plot}
@@ -106,13 +101,16 @@ def list_tv_shows_info(name, url, thumbnail, plot):
             information = {"Title": titulo, "plot": plot}
             addprograma(titulo, getAjaxUrl(programaId, temporada_actual, 'populares', '1'), 16, thumbnail, 1,
                         information, thumbnail)
-
-        xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
+        videosMatch = re.search('href="#lista-clips"><strong>V.deos</strong>([^<]*)</a>', page_source)
+        if videosMatch:
+            xbmc.log("TVI-KODI-PLAYER encontrado marcador videos")
+            parse_episodes(name, page_source, plot, thumbnail, url)
 
         if len(outras_temporadas) > 0:
             for url, descricao in outras_temporadas:
                 information = {"Title": translate(30027) + " " + descricao, "plot": plot}
-            addprograma(translate(30027) + " " + descricao, base_url + url, 13, thumbnail, 1, information, thumbnail)
+                addprograma(translate(30027) + " " + descricao, base_url + url, 13, thumbnail, 1, information, thumbnail)
+        xbmcplugin.setContent(int(sys.argv[1]), 'tvshows')
         setview('episodes-view')
     else:
         sys.exit(0)
@@ -127,6 +125,8 @@ def list_episodes(name, url, thumbnail, plot):
         msgok(translate(30001), translate(30018))
     if page_source:
         parse_episodes(name, page_source, plot, thumbnail, url)
+        xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
+        setview('episodes-view')
     else:
         sys.exit(0)
 
@@ -147,8 +147,7 @@ def parse_episodes(name, page_source, plot, thumbnail, url):
     if (matched >= 18):
         addprograma(translate(30028), getProximaPagina(url), 16, os.path.join(artfolder, "next.png"), 1, plot,
                     thumbnail)
-    xbmcplugin.setContent(int(sys.argv[1]), 'episodes')
-    setview('episodes-view')
+
 
 
 def list_emissoes(urltmp):
